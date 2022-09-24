@@ -1,0 +1,38 @@
+{% extends 'default.html' %}
+
+
+{% block title %}
+{{ view_title }}
+{% endblock title %}
+
+
+{% block content %}
+<h2>{{ view_title }}</h2>
+{% for post in posts %}
+    <div class="post">
+        <h3>{{ post.title }}</h3>
+        <div class="post-badges">
+            <span class="text-muted">автор:</span>
+            <span class="badge rounded-pill bg-secondary">{{ post.author }}</span>
+            <span class="badge rounded-pill bg-secondary">{{ post.publication_date|date:'d M Y'|default:"из недалекого будущего" }}</span>
+            <span class="text-muted">рубрика:</span>
+            <span class="badge rounded-pill bg-info">{{ post.category.title }}</span>
+            {% if not post.is_article %}
+                <span class="badge rounded-pill bg-info">новости</span>
+            {% endif %}
+
+        </div>
+        <div class="post_content">
+            {{ post.content|truncatewords_html:30|safe }}
+            <a class="badge pill bg-warning align-center" href="/posts/{{ post.pk }}">читать дальше</a>
+        </div>
+        <div class="post-tags">
+            <span class="text-muted">теги:</span>
+            {% for tag in post.tags.all %}
+                <span class="badge rounded-pill bg-secondary">{{ tag.title }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <hr style="margin-top:10px">
+{% endfor %}
+{% endblock content %}

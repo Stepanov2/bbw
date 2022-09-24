@@ -1,0 +1,61 @@
+{% extends 'default.html' %}
+{% load customfilters %}
+
+{% block title %}
+{{ post.title }}
+{% endblock title %}
+
+{% block content %}
+<div class="post">
+        <h3>{{ post.title | no_naughty_words}}</h3>
+        <div class="post-badges">
+            <span class="text-muted">автор:</span>
+            <span class="badge rounded-pill bg-secondary">{{ post.author }}</span>
+            <span class="badge rounded-pill bg-secondary">{{ post.publication_date|date:'d M Y'|default:"из недалекого будущего" }}</span>
+            <span class="text-muted">рубрика:</span>
+            <span class="badge rounded-pill bg-info">{{ post.category.title }}</span>
+            {% if not post.is_article %}
+                <span class="badge rounded-pill bg-info">новости</span>
+            {% endif %}
+
+        </div>
+        <div class="post_content">
+            {{ post.content |  no_naughty_words | safe }}
+        </div>
+           <div class="post-tags">
+            <span class="text-muted">теги:</span>
+            {% for tag in post.tags.all %}
+                <span class="badge rounded-pill bg-secondary">{{ tag.title }}</span>
+            {% endfor %}
+        </div>
+    </div>
+<hr style="margin-top:10px">
+<div class="comments">
+    <p>
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Показать Комментарии.
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+
+      {% for comment in post.comment_set.all %}
+
+            <div class="comment-badges">
+                <span class="text-muted">автор:</span>
+            <span class="badge rounded-pill bg-secondary">{{ comment.user }}</span>
+            <span class="badge rounded-pill bg-secondary">{{ comment.publication_date|date:'d M Y h:m'|default:"из недалекого будущего" }}</span>
+                <span class="badge rounded-pill bg-danger"><a href="#" class="text-white">-</a></span>
+                <span class="badge pill bg-secondary">{{ comment.updoot_count }}</span>
+                <span class="badge rounded-pill bg-success"><a href="#" class="text-white">+</a></span>
+            </div>
+            <div class="comment-body">
+                {{ comment.content }}
+                </div>
+      <hr>
+      {% endfor %}
+
+</div>
+</div>
+
+{% endblock content %}
