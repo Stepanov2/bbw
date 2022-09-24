@@ -8,7 +8,18 @@ STRIP_HTML_TAGS = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 # God bless stack overflow!
 
 
-class SiteUser(models.Model):
+class BaseModel(models.Model):
+    """A dirty little hack to allow PyCharm community edition (and, possibly other IDEs) to correctly resolve
+    .objects for models. # God bless stack overflow!
+    """
+
+    objects = models.Manager()
+
+    class Meta:
+        abstract = True
+
+
+class SiteUser(BaseModel):
     """Extension on User model.
         # user_id	PK; FK ON USERS
         # display_username	VARCHAR
@@ -26,7 +37,7 @@ class SiteUser(models.Model):
         # total_comments	INT
     """
 
-    user_id = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     display_username = models.CharField(max_length=100, unique=True)
     is_author = models.BooleanField(default=False)
     can_publish = models.BooleanField(default=False)
@@ -54,12 +65,12 @@ class SiteUser(models.Model):
 
         posts_rating = posts_by_author.aggregate(pr=Sum('updoot_count'))['pr']
 
-        comments_rating = Comment.objects.filter(user_id=self).aggregate(cr=Sum('updoot_count'))['cr']
+        comments_rating = Comment.objects.filter(user=self).aggregate(cr=Sum('updoot_count'))['cr']
 
         # .exclude() used to not count the rating for author's own comments on his own post twice
         comments_for_authors_posts_rating = \
-            Comment.objects.filter(post_id__in=posts_by_author)\
-                .exclude(user_id=self).aggregate(apcr=Sum('updoot_count'))['apcr']
+            Comment.objects.filter(post__in=posts_by_author)\
+                .exclude(user=self).aggregate(apcr=Sum('updoot_count'))['apcr']
 
         if comments_rating is None:
             comments_rating = 0
@@ -69,7 +80,7 @@ class SiteUser(models.Model):
         return posts_rating * 3 + comments_rating + comments_for_authors_posts_rating
 
 
-class Tags(models.Model):
+class Tags(BaseModel):
     """# tag_id	SERIAL PK	title	VARCHAR	count	INT"""
     title = models.CharField(max_length=120, unique=True)
     count = models.IntegerField(default=0, editable=False)
@@ -78,16 +89,16 @@ class Tags(models.Model):
         return self.title
 
 
-class PostsTags(models.Model):
+class PostTags(BaseModel):
     """ post_id	INT tag_id	INT"""
-    post_id = models.ForeignKey('Post', on_delete=models.CASCADE)
-    tag_id = models.ForeignKey(Tags, on_delete=models.CASCADE)
-    unique_together = ['post_id', 'tag_id']  # only one instance of tag per post
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
+    unique_together = ['post', 'tag']  # only one instance of tag per post
 
 
 
 
-class Post(models.Model):
+class Post(BaseModel):
     """Articles or News. TODO: "slug" field for URLS
         # post_id	SERIAL PK
         # category_id	INT
@@ -99,7 +110,7 @@ class Post(models.Model):
         # published	BOOL
         # publication_date	DATETIME
     """
-    category_id = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
     is_article = models.BooleanField(default=False)
     title = models.CharField(max_length=255)
     author = models.ForeignKey('SiteUser', on_delete=models.CASCADE)
@@ -107,7 +118,7 @@ class Post(models.Model):
     updoot_count = models.IntegerField(default=0, editable=False)
     published = models.BooleanField(default=False)
     publication_date = models.DateTimeField(null=True, blank=True)
-    tags = models.ManyToManyField(Tags, through='PostsTags')
+    tags = models.ManyToManyField(Tags, through='PostTags')
 
     def __str__(self):
         return self.title
@@ -129,7 +140,7 @@ class Post(models.Model):
         return '<p>' + re.sub(STRIP_HTML_TAGS, '', str(self.content))[:num_chars] + '...</p>\n'
 
 
-class Comment(models.Model):
+class Comment(BaseModel):
     """Comments for posts. Note: nested comments are not implemented at the moment
     # comment_id	BIGSERIAL PK
     # post_id	INT
@@ -146,8 +157,8 @@ class Comment(models.Model):
     # has_been_edited	BOOL
     """
 
-    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(SiteUser, on_delete=models.SET_NULL, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(SiteUser, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     parent_comment_id = models.IntegerField(default=0, editable=False)
     parent_comment_path = models.CharField(default='', editable=False, max_length=255)
@@ -175,7 +186,7 @@ class Comment(models.Model):
         self.save()
 
 
-class Category(models.Model):
+class Category(BaseModel):
     """Only one category per post. TODO: slug field for URLS
     # category_id	SERIAL PK
     # title	VARCHAR
@@ -188,28 +199,28 @@ class Category(models.Model):
         return self.title
 
 
-class PostUpdoots(models.Model):
+class PostUpdoots(BaseModel):
     """is_updoot=True means upvote, is_updoot=False means downvote
     # post_id	INT
     user_id	INT
     is_updoot	BOOL
     """
-    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     is_updoot = models.BooleanField(default=True, editable=False)
-    unique_together = ['post_id', 'user_id']  # only one updoot per post per user
+    unique_together = ['post', 'user']  # only one updoot per post per user
 
 
-class CommentUpdoots(models.Model):
+class CommentUpdoots(BaseModel):
     """is_updoot=True means upvote, is_updoot=False means downvote
     # comment_id	INT
     user_id	INT
     is_updoot	BOOL
     """
-    comment_id = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     is_updoot = models.BooleanField(default=True, editable=False)
-    unique_together = ['comment_id', 'user_id']  # only one updoot per comment per user
+    unique_together = ['comment', 'user']  # only one updoot per comment per user
 
 
 

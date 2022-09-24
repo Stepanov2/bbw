@@ -45,7 +45,7 @@ def add_author(name: Union[str, None] = None) -> None:  # assignment 1, 2
     if name is None:
         name = "site user number " + str(randint(1000, 100000))
     newuser = User.objects.create_user(username=name, email=name.replace(' ', '') + '@foobar.domain', password='')
-    newbbwuser = SiteUser.objects.create(display_username = name)
+    newbbwuser = SiteUser.objects.create(display_username = name, user=newuser)
     print(f'Создан пользователь {newbbwuser.display_username} c id = {newbbwuser.pk}')
     print('asdfasdfsdf')
 
@@ -61,12 +61,12 @@ def add_post(user_id: int, category_id: int, is_article: bool = True) -> None:  
     """Generate a post full of random gibberish."""
     new_post_title = get_random_sentences(1)
     new_post_content = ''
-    post_author = SiteUser.objects.get(user_id=user_id)
+    post_author = SiteUser.objects.get(pk=user_id)
     post_category = Category.objects.get(id=category_id)
     for _ in range(randint(4 + 4 * is_article, 8 + 12 * is_article)):
         new_post_content += f'<p>{get_random_sentences(randint(4, 8))}</p>\n'
     Post.objects.create(title=new_post_title, content=new_post_content, author=post_author,
-                        category_id=post_category, is_article=is_article)
+                        category=post_category, is_article=is_article)
     print(new_post_title)
     # print(new_post_content)
 
@@ -82,9 +82,9 @@ def assign_post_tag(post_id: int, tag_id: int) -> None: # assignment 7, but tags
 def add_comments(post_id: int, user_id: int, num_comments: int = 20) -> None:  # assignment 6
     """Fill post's comment section with meaningful discussion"""
     post = Post.objects.get(id=post_id)
-    user = SiteUser.objects.get(user_id=user_id)
+    user = SiteUser.objects.get(pk=user_id)
     for _ in range(num_comments):
-        Comment.objects.create(user_id=user, post_id = post, content=get_random_sentences(randint(1, 4)))
+        Comment.objects.create(user=user, post=post, content=get_random_sentences(randint(1, 4)))
     print(f'Успешно запилили {num_comments} коментов к посту "{post.title}"')
 
 
@@ -97,8 +97,8 @@ def randomize_post_scores() -> None:  # assignment 7a
 
 
 def randomize_comments_scores(post_id) -> None:  # assignment 7b
-    post = Post.objects.get(id=post_id)
-    comments = Comment.objects.filter(post_id=post)
+    post = Post.objects.get(pk=post_id)
+    comments = Comment.objects.filter(post=post)
     for comment in comments:
         comment.updoot_count = randint(-10, 42)
         comment.save()
@@ -110,7 +110,7 @@ def recalculate_users_ratings() -> None:  # assignment 8, but not using "compoun
 
     for user in SiteUser.objects.all():
         post_karma = Post.objects.filter(author=user).aggregate(pk=Sum('updoot_count'))['pk']
-        comment_karma = Comment.objects.filter(user_id=user).aggregate(kk=Sum('updoot_count'))['kk']
+        comment_karma = Comment.objects.filter(user=user).aggregate(kk=Sum('updoot_count'))['kk']
         user.post_karma = post_karma if post_karma else 0
         user.comment_karma = comment_karma if comment_karma else 0
         user.save()
@@ -123,7 +123,7 @@ def best_author() -> None:  # assignment 9, but not using compound_rating
 
 
 def best_commenter() -> None:  # assignment 9, but not using compound_rating
-    best = SiteUser.objects.order_by('-comment')[0]
+    best = SiteUser.objects.order_by('-comment_karma')[0]
     print(f'{best.display_username} - лучший комментатор, у него - {best.comment_karma} плюсиков.')
 
 
@@ -134,9 +134,9 @@ def preview_best_article(want_comments=False) -> None:  # assignment 10, 11
     print(best.get_preview())
     if not want_comments:
         return None
-    comments = Comment.objects.filter(post_id=best).order_by('-updoot_count')
+    comments = Comment.objects.filter(post=best).order_by('-updoot_count')
     for comment in comments:
-        print(f'\n\n{comment.user_id.display_username}||{comment.publication_date}||{comment.updoot_count}')
+        print(f'\n\n{comment.user.display_username}||{comment.publication_date}||{comment.updoot_count}')
         print(f'{comment.content}\n====================================================')
     return None
 
