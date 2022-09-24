@@ -6,7 +6,7 @@ _Легковесная альтернатива общеизвестному wo
 
 ## Файлы проекта:
 - **/BargainBinWordpress/bbw/views.py** - (новое) views для главной страницы, только новостей, только постов и отдельного поста
-- **/BargainBinWordpress/bbw/urls.py** - (новое) views для главной страницы, только новостей, только постов и отдельного поста
+- **/BargainBinWordpress/bbw/urls.py** - (новое) urls для всего перечисленного
 - **/BargainBinWordpress/templates/default.html** - (новое) основной шаблон сайта
 - **/BargainBinWordpress/templates/post.html** - (новое) шаблон для списков
 - **/BargainBinWordpress/templates/posts.html** - (новое) шаблон для отдельного поста (с комментариями)
