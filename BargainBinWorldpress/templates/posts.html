@@ -1,5 +1,5 @@
 {% extends 'default.html' %}
-
+{% load customfilters %}
 
 {% block title %}
 {{ view_title }}
@@ -23,7 +23,7 @@
 
         </div>
         <div class="post_content">
-            {{ post.content|truncatewords_html:30|safe }}
+            {{ post.content|truncatewords_html:30| no_naughty_words|safe }}
             <a class="badge pill bg-warning align-center" href="/posts/{{ post.pk }}">читать дальше</a>
         </div>
         <div class="post-tags">

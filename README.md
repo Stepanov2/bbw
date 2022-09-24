@@ -10,6 +10,7 @@ _Легковесная альтернатива общеизвестному wo
 - **/BargainBinWordpress/templates/default.html** - (новое) основной шаблон сайта
 - **/BargainBinWordpress/templates/post.html** - (новое) шаблон для списков
 - **/BargainBinWordpress/templates/posts.html** - (новое) шаблон для отдельного поста (с комментариями)
+- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - (новое) фильтр "нехороших" слов для постов и комментариев.
 - **/BargainBinWordpress/bbw/models.py** - (изменено) заготовка моделей проекта. Теперь без бесконечных _id в названиях полей. 
 Migrations пересозданы с нуля, база заполнена новыми данными
 - **/BargainBinWordpress/bbw/admin.py** - можно править посты/юзеров/категории/теги из админки

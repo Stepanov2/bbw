@@ -50,7 +50,7 @@
                 <span class="badge rounded-pill bg-success"><a href="#" class="text-white">+</a></span>
             </div>
             <div class="comment-body">
-                {{ comment.content }}
+                {{ comment.content |  no_naughty_words}}
                 </div>
       <hr>
       {% endfor %}
