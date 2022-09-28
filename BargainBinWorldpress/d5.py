@@ -57,18 +57,17 @@ def add_tag(title_:str) -> None:  # assignment 3 but tags instead of categories
     print(f'Добавили тег "{title_}"')
 
 
-def add_post(user_id: int, category_id: int, is_article: bool = True) -> None:   # assignment 4
-    """Generate a post full of random gibberish."""
+def add_post(user_id: int, category_id: int, is_article: bool = True) -> int:   # assignment 4
+    """Generate a post full of random gibberish and return post_id"""
     new_post_title = get_random_sentences(1)
     new_post_content = ''
     post_author = SiteUser.objects.get(pk=user_id)
     post_category = Category.objects.get(id=category_id)
     for _ in range(randint(4 + 4 * is_article, 8 + 12 * is_article)):
         new_post_content += f'<p>{get_random_sentences(randint(4, 8))}</p>\n'
-    Post.objects.create(title=new_post_title, content=new_post_content, author=post_author,
+    newpost = Post.objects.create(title=new_post_title, content=new_post_content, author=post_author,
                         category=post_category, is_article=is_article)
-    print(new_post_title)
-    # print(new_post_content)
+    return newpost.pk
 
 
 def assign_post_tag(post_id: int, tag_id: int) -> None: # assignment 7, but tags instead of categories
@@ -142,6 +141,29 @@ def preview_best_article(want_comments=False) -> None:  # assignment 10, 11
 
 
 def q(): quit()  # just a shortcut
+
+
+def fill_with_buttload_of_data():
+    """Get all registered users and get them to fill the database with buttload of data"""
+    potential_authors = SiteUser.objects.all()
+    numauthors = len(potential_authors)
+    potential_categories = Category.objects.all()
+    potential_tags = Tags.objects.all()
+    for _ in range(20):
+        author_id = ch(potential_authors).pk
+        category_id = ch(potential_categories).pk
+        is_article = ch((True, False))
+        tag1 = ch(potential_tags).id
+        tag2 = ch(potential_tags).id
+        post_id = add_post(author_id, category_id, is_article)
+        assign_post_tag(post_id, tag1)
+        assign_post_tag(post_id, tag2)
+        for i in range(numauthors):
+            add_comments(post_id, potential_authors[i].pk, randint(2, 8))
+        randomize_comments_scores(post_id)
+    randomize_post_scores()
+    recalculate_users_ratings()
+
 
 
 #  user should not be messing with this file, it's for debug only
