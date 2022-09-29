@@ -9,6 +9,7 @@ class PostList(ListView):
     # ordering = '-publication_date'
     template_name = 'posts.html'
     context_object_name = 'posts'
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context

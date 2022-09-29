@@ -35,4 +35,31 @@
     </div>
     <hr style="margin-top:10px">
 {% endfor %}
+
+{% if page_obj.has_previous or page_obj.has_next %}
+
+<div class="page_scroller">
+     <span class="text-muted">страницы:</span>
+   {% if page_obj.has_previous %}
+
+<span class="badge rounded-pill bg-info"><a href="?page=1">1</a></span>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+<span class="badge rounded-pill bg-info"><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></span>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+<span class="badge rounded-pill bg-success">{{ page_obj.number }}</span>
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+<span class="badge rounded-pill bg-info"><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></span>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+<span class="badge rounded-pill bg-info"><a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></span>
+       {% endif %}
+   {% endif %}
+</div>
+{% endif %}
 {% endblock content %}
