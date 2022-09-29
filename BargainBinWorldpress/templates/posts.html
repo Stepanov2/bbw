@@ -8,8 +8,23 @@
 
 {% block content %}
 <h2>{{ view_title }}</h2>
+<div class="filters">
+    <p>
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+    Показать/скрыть фильтры.
+  </button>
+</p>
+<div class="collapse" id="collapseFilters">
+  <div class="card card-body">
+      <form action="" method="get">
+          {{ filterset.form.as_p }}
+          <input type="submit" value="Фильтруем-с!">
+      </form>
+      <hr>
+  </div>
+</div>
 {% for post in posts %}
-    <div class="post">
+    <article class="post">
         <h3>{{ post.title }}</h3>
         <div class="post-badges">
             <span class="text-muted">автор:</span>
@@ -32,7 +47,7 @@
                 <span class="badge rounded-pill bg-secondary">{{ tag.title }}</span>
             {% endfor %}
         </div>
-    </div>
+    </article>
     <hr style="margin-top:10px">
 {% endfor %}
 
@@ -42,10 +57,10 @@
      <span class="text-muted">страницы:</span>
    {% if page_obj.has_previous %}
 
-<span class="badge rounded-pill bg-info"><a href="?page=1">1</a></span>
+<span class="badge rounded-pill bg-info"><a href="?{% url_replace page=1 %}">1</a></span>
        {% if page_obj.previous_page_number != 1 %}
            ...
-<span class="badge rounded-pill bg-info"><a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></span>
+<span class="badge rounded-pill bg-info"><a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></span>
        {% endif %}
    {% endif %}
 
@@ -54,10 +69,10 @@
 
    {# Информация о следующих страницах #}
    {% if page_obj.has_next %}
-<span class="badge rounded-pill bg-info"><a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></span>
+<span class="badge rounded-pill bg-info"><a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></span>
        {% if paginator.num_pages != page_obj.next_page_number %}
            ...
-<span class="badge rounded-pill bg-info"><a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></span>
+<span class="badge rounded-pill bg-info"><a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a></span>
        {% endif %}
    {% endif %}
 </div>

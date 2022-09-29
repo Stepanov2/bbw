@@ -3,6 +3,7 @@
 from bbw.models import *
 from random import choice as ch, randint
 from typing import Union
+import datetime
 
 
 def get_random_sentences(num_sentences: int = 1) -> str:
@@ -165,6 +166,11 @@ def fill_with_buttload_of_data():
     recalculate_users_ratings()
 
 
+def random_dates_for_posts():
+    posts = Post.objects.all()
+    for post in posts:
+        post.publication_date = datetime.datetime(year=2019+randint(0, 3), month=randint(1, 12), day=randint(1, 28))
+        post.save()
 
 #  user should not be messing with this file, it's for debug only
 print('А ТЫ СДЕЛАЛ БЭКАП, ПРЕЖДЕ ЧЕМ ПОРТИТЬ БАЗУ?')

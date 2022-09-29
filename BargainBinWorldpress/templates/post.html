@@ -6,7 +6,7 @@
 {% endblock title %}
 
 {% block content %}
-<div class="post">
+<article class="post">
         <h3>{{ post.title | no_naughty_words}}</h3>
         <div class="post-badges">
             <span class="text-muted">автор:</span>
@@ -28,15 +28,15 @@
                 <span class="badge rounded-pill bg-secondary">{{ tag.title }}</span>
             {% endfor %}
         </div>
-    </div>
+    </article>
 <hr style="margin-top:10px">
 <div class="comments">
     <p>
-  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComments" aria-expanded="false" aria-controls="collapseComments">
     Показать Комментарии.
   </button>
 </p>
-<div class="collapse" id="collapseExample">
+<div class="collapse" id="collapseComments">
   <div class="card card-body">
 
       {% for comment in post.comment_set.all %}
