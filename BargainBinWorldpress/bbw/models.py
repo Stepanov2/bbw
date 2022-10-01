@@ -4,6 +4,8 @@ from django.db.models import Sum
 from typing import Union
 import re
 
+from django.urls import reverse_lazy
+
 STRIP_HTML_TAGS = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 # God bless stack overflow!
 
@@ -138,6 +140,9 @@ class Post(BaseModel):
         # todo make this return "...Foo..." instead of "...Foo ba..."
         # todo allow user to specify different tags via optional arguments
         return '<p>' + re.sub(STRIP_HTML_TAGS, '', str(self.content))[:num_chars] + '...</p>\n'
+
+    def get_absolute_url(self):
+        return reverse_lazy('show_post', kwargs={'pk': self.pk})
 
 
 class Comment(BaseModel):

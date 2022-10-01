@@ -7,8 +7,12 @@ class PostFilter(FilterSet):
         model = Post
         fields = {
             'author': ['exact'],
+            'is_article': ['exact'],
+            'title': ['contains'],
+            'content': ['contains'],
             'publication_date': ['exact', 'year__exact'],
             'category': ['exact'],
             'tags': ['exact'],
-            'is_article': ['exact']
+
         }
+        

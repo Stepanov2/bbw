@@ -5,18 +5,17 @@ _Легковесная альтернатива общеизвестному wo
 Или слишком подробная документация. Или слишком много готовых плагинов и шаблонов. Или..._
 
 ## Файлы проекта:
-- **/BargainBinWordpress/bbw/views.py** - (новое) views для главной страницы, только новостей, только постов и отдельного поста
-- **/BargainBinWordpress/bbw/urls.py** - (новое) urls для всего перечисленного
-- **/BargainBinWordpress/templates/default.html** - (новое) основной шаблон сайта
-- **/BargainBinWordpress/templates/post.html** - (новое) шаблон для списков
-- **/BargainBinWordpress/templates/posts.html** - (новое) шаблон для отдельного поста (с комментариями)
-- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - (новое) фильтр "нехороших" слов для постов и комментариев.
-- **/BargainBinWordpress/bbw/models.py** - (изменено) заготовка моделей проекта. Теперь без бесконечных _id в названиях полей. 
-Migrations пересозданы с нуля, база заполнена новыми данными
+- **/BargainBinWordpress/bbw/forms.py** - (новое) Формы для добавления/правки постов.
+- **/BargainBinWordpress/bbw/filters.py** - (новое) Фильтры по постам (django_filter)
+- **/BargainBinWordpress/bbw/views.py** - (изменено) Новые views для поиска, добавления/удаления/редактирования постов.
+- **/BargainBinWordpress/bbw/urls.py** - (изменено) urls для всего перечисленного
+- **/BargainBinWordpress/bbw/models.py** - (изменено) метод get_absolute_url для Post (нужно, чтобы попадать на Url c постом после создания поста)
+- **/BargainBinWordpress/d5.py** - (изменено) новая функция, чтобы в одну строку заполнять базу большим количеством данных (чтобы как-то оправдать паджинацию)
+- **/BargainBinWordpress/templates/** - новые шаблоны. Плюс в старых небольшие изменения.
+- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - фильтр "нехороших" слов для постов и комментариев.
 - **/BargainBinWordpress/bbw/admin.py** - можно править посты/юзеров/категории/теги из админки
-- **/BargainBinWordpress/d5.py** - здесь лежат всякие функции для наполнения базы тестовыми данными (из задания D5.9)
 
-Использование:
+Использование d5.py:
 ```commandline
 python manage.py shell
 ```

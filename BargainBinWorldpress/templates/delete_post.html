@@ -1,0 +1,36 @@
+{% extends 'default.html' %}
+{% load customfilters %}
+
+{% block title %}
+Подтвердите удаление {{ post.title }}
+{% endblock title %}
+
+{% block content %}
+<h3>Вы точно хотите УДОЛИТЬ "{{ post.title }}"?</h3>
+    <h4 class="text-danger">Это действие - необратимо!.</h4>
+<form action="" method="post">
+    {% csrf_token %}
+    <input class="bg-danger text-white" type="submit" value="Да, УДОЛИТЬ!" />
+</form>
+<hr style="margin-top:10px">
+<article class="post">
+        <h3>{{ post.title | no_naughty_words}}</h3>
+        <div class="post-badges">
+            <span class="text-muted">автор:</span>
+            <span class="badge rounded-pill bg-secondary">{{ post.author }}</span>
+            <span class="badge rounded-pill bg-secondary">{{ post.publication_date|date:'d M Y'|default:"из недалекого будущего" }}</span>
+            <span class="text-muted">рубрика:</span>
+            <span class="badge rounded-pill bg-info">{{ post.category.title }}</span>
+            {% if not post.is_article %}
+                <span class="badge rounded-pill bg-info">новости</span>
+            {% endif %}
+
+        </div>
+        <div class="post_content">
+            {{ post.content |  no_naughty_words | safe }}
+        </div>
+
+    </article>
+
+
+{% endblock content %}
