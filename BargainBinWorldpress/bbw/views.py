@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
 from .filters import PostFilter
@@ -48,6 +49,7 @@ class SearchView(PostList):
         context['show_results'] = self.is_there_a_request
         return context
 
+
 class PostDetails(DetailView):
     model = Post
     template_name = 'post.html'
@@ -78,21 +80,21 @@ class ArticleList(PostList):
 # ============ begin forms ============
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'edit_post.html'
     # success_url = reverse_lazy('all_posts')
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'edit_post.html'
     # success_url = reverse_lazy('all_posts')
 
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'delete_post.html'
     success_url = reverse_lazy('all_posts')
