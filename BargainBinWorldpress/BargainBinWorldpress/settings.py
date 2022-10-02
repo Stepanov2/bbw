@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-0bnwljn4sle-rp3_537-w#s1t+15^b=3*!+srm7yk-8(d@(ey%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bbw',
     'django_filters',
+    'basiclogin'
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = '/login/login'
+# LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/'

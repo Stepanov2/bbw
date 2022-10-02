@@ -1,0 +1,22 @@
+{% extends 'default.html' %}
+{% load customfilters %}
+
+{% block title %}
+Сударь, залогиньтесь!
+{% endblock title %}
+
+{% block content %}
+    <div class="post">
+        <h3>Давайте же зарегистрируем вас пскорей!</h3>
+        <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Продолжить">
+        </form>
+
+
+
+
+    </div>
+
+{% endblock content %}
