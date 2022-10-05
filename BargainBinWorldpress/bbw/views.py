@@ -55,7 +55,7 @@ class SearchView(PostList):
 
 class PostDetails(DetailView):
     model = Post
-    template_name = 'post.html'
+    template_name = 'posts.html'
     context_object_name = 'post'
 
 
@@ -84,7 +84,7 @@ class ArticleList(PostList):
 
 
 class PostCreate(PermissionRequiredMixin, CreateView):
-    permission_required = ('bbw.create_post')
+    permission_required = ('bbw.add_post')
     permission_denied_message = 'Вы не автор - уйдите отседова!'  # не работаит:'-(((
     form_class = PostForm
     model = Post
@@ -117,6 +117,24 @@ class NewsCreate(PostCreate):
     form_class = NewsForm
 
 
+@login_required
+def become_author(request):
+    form = BBWBecomeAuthor(request.POST)
+    authors = Group.objects.get(pk=2)
+    fail_message = ''  # also works as success message =)
+    if authors in request.user.groups.all():
+        fail_message = 'Ты и так уже автор, дуражка! '
+
+    elif request.POST:
+        if not request.POST['i_consent']:
+            fail_message = 'Ты не нажал галочку, дуражка!'
+        else:
+            request.user.groups.add(authors)
+            fail_message = 'Поздравляем, теперь вы - автор! Перо покупаете за свой счёт!'
+
+    return render(request, 'become_author.html', context={'form': form, 'fail_message': fail_message})
+
+
 # class UserSettings(LoginRequiredMixin, UpdateView):
 #     template_name = 'profile.html'
 #     context_object_name = 'user'
@@ -130,21 +148,3 @@ class NewsCreate(PostCreate):
 #         context = super(UserSettings, self).get_context_data(**kwargs)
 #         context['user_form'] = UserUpdateForm(instance=self.request.user)
 #         return context
-
-
-@login_required
-def become_author(request):
-    form = BBWBecomeAuthor(request.POST)
-    authors = Group.objects.get(pk=2)
-    fail_message = '' # also works as success message =)
-    if authors in request.user.groups.all():
-        fail_message = 'Ты и так уже автор, дуражка! '
-
-    elif request.POST:
-        if not request.POST['i_consent']:
-            fail_message = 'Ты не нажал галочку, дуражка!'
-        else:
-            request.user.groups.add(authors)
-            fail_message = 'Поздравляем, теперь вы - автор! Перо покупаете за свой счёт!'
-
-    return render(request, 'become_author.html', context={'form': form, 'fail_message': fail_message})

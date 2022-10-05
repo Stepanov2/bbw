@@ -2,7 +2,7 @@
 {% load customfilters %}
 
 {% block title %}
-{% if post.title%}
+{% if post.title %}
 Редактирование поста "{{ post.title }}"
 {% else %}
 Создание поста
@@ -10,8 +10,12 @@
 {% endblock title %}
 
 {% block content %}
-<h2>Редактирование поста {{ post.title }} .</h2>
-<span class="text-danger">Чур не трогать тут ничего, если вы - не админ, лады?</span>
+<h2>
+    {% if post.title %}
+Редактирование поста "{{ post.title }}"
+{% else %}
+Создание поста
+{% endif %}</h2>
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}

@@ -1,13 +1,11 @@
-{% extends 'default.html' %}
+
 {% load customfilters %}
+{% if not post.title %}
 
-{% block title %}
-{{ post.title }}
-{% endblock title %}
-
-{% block content %}
-<article class="post">
-                <h3>{{ post.title }}</h3>
+    <h2>С прискорбием сообщаем вам, что по вашему запросу ничего не найдено.</h2>
+{% else %}
+  <article class="post">
+        <h3>{{ post.title }}</h3>
         <div class="post-badges">
             <span class="text-muted">автор:</span>
             <span class="badge rounded-pill bg-secondary">
@@ -26,15 +24,21 @@
 
         </div>
         <div class="post_content">
-            {{ post.content |  no_naughty_words | safe }}
+            {% if short_preview %}
+                {{ post.content|truncatewords_html:30|no_naughty_words|safe }}
+                <a class="badge pill bg-warning align-center" href="/posts/{{ post.pk }}">читать дальше</a>
+            {% else %}
+                {{ post.content|no_naughty_words|safe }}
+            {% endif %}
         </div>
- <div class="post-tags">
+        <div class="post-tags">
             <span class="text-muted">теги:</span>
             {% for tag in post.tags.all %}
                 <span class="badge rounded-pill bg-secondary">
                     <a href="/?tags={{tag.pk}}" class="text-white">{{ tag.title }}</a></span>
             {% endfor %}
         </div>
+      {% if perms.BBW.post_edit or perms.BBW.post_delete%}
         <div class="post-actions">
             <span class="text-muted">администрирование:</span>
 
@@ -45,9 +49,13 @@
                 <a href="/posts/delete/{{post.pk}}" class="text-white">УДОЛИТЬ!</a>
             </span>
 
+
         </div>
+      {% endif %}
     </article>
 <hr style="margin-top:10px">
+
+{% if render_comments %}
 <div class="comments">
     <p>
   <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComments" aria-expanded="false" aria-controls="collapseComments">
@@ -75,5 +83,7 @@
 
 </div>
 </div>
+    {% endif %}
+    {% endif %}
 
-{% endblock content %}
+
