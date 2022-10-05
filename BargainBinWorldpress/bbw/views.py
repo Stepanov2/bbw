@@ -1,10 +1,13 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
+from .models import Post, SiteUser
 from .filters import PostFilter
-from .forms import PostForm, ArticleForm, NewsForm
+from .forms import PostForm, ArticleForm, NewsForm, BBWBecomeAuthor  # UserUpdateForm, BBWUserUpdateForm
+
 
 # Create your views here.
 
@@ -80,21 +83,27 @@ class ArticleList(PostList):
 # ============ begin forms ============
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('bbw.create_post')
+    permission_denied_message = 'Вы не автор - уйдите отседова!'  # не работаит:'-(((
     form_class = PostForm
     model = Post
     template_name = 'edit_post.html'
     # success_url = reverse_lazy('all_posts')
 
 
-class PostUpdate(LoginRequiredMixin, UpdateView):
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('bbw.change_post')
+    permission_denied_message = 'Вы не автор - уйдите отседова!'
     form_class = PostForm
     model = Post
     template_name = 'edit_post.html'
     # success_url = reverse_lazy('all_posts')
 
 
-class PostDelete(LoginRequiredMixin, DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('bbw.delete_post')
+    permission_denied_message = 'Вы не автор - уйдите отседова!'
     model = Post
     template_name = 'delete_post.html'
     success_url = reverse_lazy('all_posts')
@@ -104,15 +113,38 @@ class ArticleCreate(PostCreate):
     form_class = ArticleForm
 
 
-# class ArticleUpdate(PostUpdate):
-#     form_class = ArticleForm
-#
-
 class NewsCreate(PostCreate):
     form_class = NewsForm
 
 
-# class NewsUpdate(PostUpdate):
-#     form_class = NewsForm
+# class UserSettings(LoginRequiredMixin, UpdateView):
+#     template_name = 'profile.html'
+#     context_object_name = 'user'
+#     model = SiteUser
+#     form_class = BBWUserUpdateForm
+#
+#     def get_success_url(self):
+#         return '/profile/' + str(self.get_object().pk)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(UserSettings, self).get_context_data(**kwargs)
+#         context['user_form'] = UserUpdateForm(instance=self.request.user)
+#         return context
 
 
+@login_required
+def become_author(request):
+    form = BBWBecomeAuthor(request.POST)
+    authors = Group.objects.get(pk=2)
+    fail_message = '' # also works as success message =)
+    if authors in request.user.groups.all():
+        fail_message = 'Ты и так уже автор, дуражка! '
+
+    elif request.POST:
+        if not request.POST['i_consent']:
+            fail_message = 'Ты не нажал галочку, дуражка!'
+        else:
+            request.user.groups.add(authors)
+            fail_message = 'Поздравляем, теперь вы - автор! Перо покупаете за свой счёт!'
+
+    return render(request, 'become_author.html', context={'form': form, 'fail_message': fail_message})

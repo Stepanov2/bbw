@@ -27,3 +27,10 @@ def url_replace(context, **kwargs):
    for k, v in kwargs.items():
        d[k] = v
    return d.urlencode()
+
+
+@register.filter(name='has_group')
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
+
+

@@ -1,0 +1,22 @@
+{% extends 'default.html' %}
+{% load customfilters %}
+
+{% block title %}
+{% if post.title%}
+Редактирование поста "{{ post.title }}"
+{% else %}
+Создание поста
+{% endif %}
+{% endblock title %}
+
+{% block content %}
+<h2>Привет, {{ User.display_username }} .</h2>
+<p>Здесь ты можешь исправить себя или стать автором (или редактором, или ещё кем) в пару кликов!</span>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ user_form }}
+    {{ form }}
+    <input type="submit" value="Сохранить." />
+</form>
+
+{% endblock content %}

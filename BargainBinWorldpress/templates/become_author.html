@@ -1,0 +1,21 @@
+{% extends 'default.html' %}
+{% load customfilters %}
+{% load account %}
+{% block title %}
+Запишись в авторы, дорогой!
+{% endblock title %}
+
+{% block content %}
+<h2>Привет, {% user_display user %}!</h2>
+{% if fail_message %}
+    <h3>{{fail_message}}</h3>
+{% else %}
+    <p>Запишись в авторы в два клика! Принимаем с любой категорией годности!</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Стать автором." />
+    </form>
+{% endif %}
+
+{% endblock content %}
