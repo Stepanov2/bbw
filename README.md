@@ -5,15 +5,15 @@ _Легковесная альтернатива общеизвестному wo
 Или слишком подробная документация. Или слишком много готовых плагинов и шаблонов. Или..._
 
 ## Файлы проекта:
-- **/BargainBinWordpress/bbw/forms.py** - (новое) Формы для добавления/правки постов.
-- **/BargainBinWordpress/bbw/filters.py** - (новое) Фильтры по постам (django_filter)
-- **/BargainBinWordpress/bbw/views.py** - (изменено) Новые views для поиска, добавления/удаления/редактирования постов.
-- **/BargainBinWordpress/bbw/urls.py** - (изменено) urls для всего перечисленного
-- **/BargainBinWordpress/bbw/models.py** - (изменено) метод get_absolute_url для Post (нужно, чтобы попадать на Url c постом после создания поста)
-- **/BargainBinWordpress/d5.py** - (изменено) новая функция, чтобы в одну строку заполнять базу большим количеством данных (чтобы как-то оправдать паджинацию)
-- **/BargainBinWordpress/templates/** - новые шаблоны. Плюс в старых небольшие изменения.
-- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - фильтр "нехороших" слов для постов и комментариев.
+- **/BargainBinWordpress/bbw/forms.py** - (изменено) Добавлены слегка кастомизированная форма для регистрации. И для становления автором.
+- **/BargainBinWordpress/bbw/views.py** - (изменено) Views для оного.
+- **/BargainBinWordpress/templates/** - Новый шаблон для авторизации через all_auth. Плюс (__НАКОНЕЦ-ТО__) рендеринг поста целиком вынесен в отдельный файл. Больше не нужно поддерживать три копии кода.
+- **/BargainBinWordpress/bbw/urls.py** - (изменено) Новые urls для авторизации и становления автором.
+- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - (изменено) Новый фильтр has_group.
+- **/BargainBinWordpress/bbw/models.py** - Модели
+- **/BargainBinWordpress/bbw/filters.py** - Фильтры по постам (django_filter)
 - **/BargainBinWordpress/bbw/admin.py** - можно править посты/юзеров/категории/теги из админки
+- **/BargainBinWordpress/d5.py** - Функции для наполнения базы тестовыми данными.
 
 Использование d5.py:
 ```commandline
