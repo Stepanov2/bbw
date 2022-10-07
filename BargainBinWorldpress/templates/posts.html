@@ -27,10 +27,10 @@
 {% endif %}
     {% if posts %}
         {% for post in posts %}
-            {% include 'post.html' with object=post render_comments=False short_preview=True %}
+            {% include 'post.html' with render_comments=False short_preview=True %}
         {% endfor %}
     {% elif post %}
-        {% include 'post.html' with object=post render_comments=True short_preview=False %}
+        {% include 'post.html' with render_comments=True short_preview=False %}
     {% endif %}
 
 {% if page_obj.has_previous or page_obj.has_next %}
