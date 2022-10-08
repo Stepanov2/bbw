@@ -10,7 +10,7 @@
 <h2>Ваши подписки</h2>
 {% if message %}
 <h2>{{message}}</h2>
-{% else %}
+{% endif %}
     <form class="" method="post">
         {% csrf_token %}
         <h4>Категории</h4>
@@ -27,5 +27,5 @@
 
         <input type="submit" value="Обновить подписки." />
     </form>
-{% endif %}
+
 {% endblock %}

@@ -152,28 +152,34 @@ def become_author(request):
 
 
 class EmailSubscriptionsView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        current_user = request.user.siteuser
-        # category_list=Category.objects.SiteUser_set(Site)
+    def get_dict(self, current_user: SiteUser) -> dict:
+        """Returns a dict of values for template rendering."""
         user_category_list = set(current_user.category_set.all())
         category_list = set(Category.objects.all()).difference(user_category_list)
 
         user_tag_list = set(current_user.tags_set.all())
         tag_list = set(Tags.objects.all()).difference(user_tag_list)
+
         for i, value in enumerate(category_list):
             if value in user_category_list:
                 category_list.pop(i)
 
-        return render(request, 'list_subscriptions.html', {'cats': category_list,
-                                                           'user_cats': user_category_list,
-                                                           'tags': tag_list,
-                                                           'user_tags': user_tag_list})
+        return {'cats': category_list,
+                'user_cats': user_category_list,
+                'tags': tag_list,
+                'user_tags': user_tag_list}
+
+    def get(self, request, *args, **kwargs):
+        current_user = request.user.siteuser
+        request_parameters = self.get_dict(current_user)
+
+        return render(request, 'list_subscriptions.html', request_parameters)
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
+        # print(request.POST)
         current_user = request.user.siteuser
-        current_user.tags_set.all().delete()
-        current_user.category_set.all().delete()
+        current_user.tags_set.clear()
+        current_user.category_set.clear()
 
         for val in dict(request.POST).keys():
             val = val.split('-')
@@ -186,7 +192,9 @@ class EmailSubscriptionsView(LoginRequiredMixin, View):
             else:
                 continue
         current_user.save()
-        return render(request, 'list_subscriptions.html', {'message': 'Успешно обновили ваши подписки, уважаемый!',})
+        request_parameters = self.get_dict(current_user)
+        request_parameters.update({'message': 'Успешно обновили ваши подписки, уважаемый!'})
+        return render(request, 'list_subscriptions.html', request_parameters)
 
     def check_subscriptions(self):
         pass
