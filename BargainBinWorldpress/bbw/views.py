@@ -3,10 +3,11 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, SiteUser
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
+from .models import Post, SiteUser, Tags, Category
 from .filters import PostFilter
 from .forms import PostForm, ArticleForm, NewsForm, BBWBecomeAuthor  # UserUpdateForm, BBWUserUpdateForm
+from django.template.loader import render_to_string
 
 
 # Create your views here.
@@ -148,3 +149,44 @@ def become_author(request):
 #         context = super(UserSettings, self).get_context_data(**kwargs)
 #         context['user_form'] = UserUpdateForm(instance=self.request.user)
 #         return context
+
+
+class EmailSubscriptionsView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        current_user = request.user.siteuser
+        # category_list=Category.objects.SiteUser_set(Site)
+        user_category_list = set(current_user.category_set.all())
+        category_list = set(Category.objects.all()).difference(user_category_list)
+
+        user_tag_list = set(current_user.tags_set.all())
+        tag_list = set(Tags.objects.all()).difference(user_tag_list)
+        for i, value in enumerate(category_list):
+            if value in user_category_list:
+                category_list.pop(i)
+
+        return render(request, 'list_subscriptions.html', {'cats': category_list,
+                                                           'user_cats': user_category_list,
+                                                           'tags': tag_list,
+                                                           'user_tags': user_tag_list})
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        current_user = request.user.siteuser
+        current_user.tags_set.all().delete()
+        current_user.category_set.all().delete()
+
+        for val in dict(request.POST).keys():
+            val = val.split('-')
+            if val[0] == 'cat':
+                cat=Category.objects.get(pk=val[1])
+                current_user.category_set.add(cat)
+            elif val[0] == 'tags':
+                tag = Tags.objects.get(pk=val[1])
+                current_user.tags_set.add(tag)
+            else:
+                continue
+        current_user.save()
+        return render(request, 'list_subscriptions.html', {'message': 'Успешно обновили ваши подписки, уважаемый!',})
+
+    def check_subscriptions(self):
+        pass

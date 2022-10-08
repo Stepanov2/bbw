@@ -87,6 +87,7 @@ class Tags(BaseModel):
     """# tag_id	SERIAL PK	title	VARCHAR	count	INT"""
     title = models.CharField(max_length=120, unique=True)
     count = models.IntegerField(default=0, editable=False)
+    subscribers = models.ManyToManyField(SiteUser)
 
     def __str__(self):
         return self.title
@@ -200,6 +201,7 @@ class Category(BaseModel):
     """
     title = models.CharField(max_length=100, unique=True)
     count = models.IntegerField(default=0, editable=False)
+    subscribers = models.ManyToManyField(SiteUser)
 
     def __str__(self):
         return self.title

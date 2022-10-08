@@ -1,0 +1,31 @@
+{% extends 'default.html' %}
+{% load customfilters %}
+
+{% block title %}
+Ваши подписки
+{% endblock title %}
+
+
+{% block content %}
+<h2>Ваши подписки</h2>
+{% if message %}
+<h2>{{message}}</h2>
+{% else %}
+    <form class="" method="post">
+        {% csrf_token %}
+        <h4>Категории</h4>
+        <table class="categories">
+            {% include 'list_things.html' with checked_objects=user_cats unchecked_objects=cats field_prefix='cat' %}
+
+        </table>
+        <h4>Теги</h4>
+        <table class="categories">
+            {% include 'list_things.html' with checked_objects=user_tags unchecked_objects=tags field_prefix='tags' %}
+
+        </table>
+
+
+        <input type="submit" value="Обновить подписки." />
+    </form>
+{% endif %}
+{% endblock %}

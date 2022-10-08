@@ -16,6 +16,7 @@ urlpatterns = [
     path('posts/new_news', NewsCreate.as_view(), name='new_news'),
     path('posts/edit/<int:pk>', PostUpdate.as_view(), name='edit_post'),
     path('posts/delete/<int:pk>', PostDelete.as_view(), name='delete_post'),
-    path('become_author', become_author, name='become_author')
+    path('become_author', become_author, name='become_author'),
+    path('subscriptions', EmailSubscriptionsView.as_view(), name='subscriptions')
 ]
 

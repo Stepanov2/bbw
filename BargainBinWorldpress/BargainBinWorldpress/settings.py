@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0bnwljn4sle-rp3_537-w#s1t+15^b=3*!+srm7yk-8(d@(ey%'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -160,3 +162,20 @@ SITE_ID = 1
 # custom form that will link user account to bbw.siteuser model
 
 ACCOUNT_FORMS = {'signup': 'bbw.forms.BBWSignupForm'}
+
+# debugmail.io credentials
+
+EMAIL_HOST = "app.debugmail.io"
+EMAIL_HOST_USER = "370ff9be-3076-4f5e-ae84-6be27fd79f9a"
+EMAIL_PORT = "25"
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # пароль от почты
+print(EMAIL_HOST_PASSWORD)
+#EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
+
+ADMINS = [
+    ('Dmitry', 'admin@dummymailserver.oof'),
+    ]
+
+SERVER_EMAIL = 'dudepleasereply@dummymailserver.oof'
+

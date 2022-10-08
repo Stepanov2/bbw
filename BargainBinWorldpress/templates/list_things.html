@@ -1,0 +1,10 @@
+
+        {% for item in checked_objects %}
+            <tr><td><input type="checkbox" name="{{field_prefix}}-{{item.pk}}" checked></td>
+            <td>{{item}}</td></tr>
+        {% endfor %}
+
+        {% for item in unchecked_objects %}
+            <tr><td><input type="checkbox" name="{{field_prefix}}-{{item.pk}}"></td>
+            <td>{{item}}</td></tr>
+        {% endfor %}
