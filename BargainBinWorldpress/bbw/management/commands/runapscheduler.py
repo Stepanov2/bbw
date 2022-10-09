@@ -46,7 +46,7 @@ def send_weekly_mails():
             continue
         else:
             posts_for_user = []
-            print(f'{user} HAS active subscriptions')
+            print(f'{user} HAS active subscriptions!', end=' ')
             # getting posts for users
 
             # COMMENT THESE LINES FOR PRODUCTION
@@ -63,7 +63,7 @@ def send_weekly_mails():
             #                                           publication_date__lt=datetime.now(tz=utc)))
 
             if not len(posts_for_user):
-                print(f'Nothing to send to{user} this week, sadly!')
+                print(f'Nothing to send to {user} this week, sadly!')
                 continue
 
             posts_for_user = list(set(posts_for_user))

@@ -90,3 +90,16 @@ def add_one_to_post_count(sender, instance, **kwargs):
     user.total_posts -= 1
     user.save()
     print(f"Someone've killed a post#{instance.pk}. How could (s)he?")
+
+
+@receiver(post_save, sender=SiteUser)
+def send_welcome_email(sender, instance, created, **kwargs):
+    subject = f'Добро пожаловать на Newsandstuff, {instance.display_username}'
+    body = 'Ну кто читает plain text в 2022, а?..'
+    html = render_to_string('welcome_email.html', {})
+    mass_email = EmailMultiAlternatives(subject=subject,
+                                        body=body,
+                                        from_email='test@testing.time',
+                                        to=[instance.user.email])
+    mass_email.attach_alternative(html, "text/html")
+    mass_email.send()  # sending e-mail
