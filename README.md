@@ -5,11 +5,12 @@ _Легковесная альтернатива общеизвестному wo
 Или слишком подробная документация. Или слишком много готовых плагинов и шаблонов. Или..._
 
 ## Файлы проекта:
-- **/BargainBinWordpress/bbw/forms.py** - (изменено) Добавлены слегка кастомизированная форма для регистрации. И для становления автором.
-- **/BargainBinWordpress/bbw/views.py** - (изменено) Views для оного.
-- **/BargainBinWordpress/templates/** - Новый шаблон для авторизации через all_auth. Плюс (__НАКОНЕЦ-ТО__) рендеринг поста целиком вынесен в отдельный файл. Больше не нужно поддерживать три копии кода.
-- **/BargainBinWordpress/bbw/urls.py** - (изменено) Новые urls для авторизации и становления автором.
-- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - (изменено) Новый фильтр has_group.
+- **/BargainBinWordpress/bbw/forms.py** - (новое). Обработчики сигналов для задания. 
+- **/BargainBinWorldpress/bbw/management/commands.py** (новое). Рассылка дайджестов за неделю с помощью django-apscheduler.
+- **/BargainBinWordpress/bbw/views.py** - (изменено) Добавлен EmailSubscriptionsView для управления подписками
+- **/BargainBinWordpress/templates/** - (изменено) Новые шаблоны для почты. post.html теперь принимает is_for_email и добавляет к посту email_header/footer.html.
+- **/BargainBinWordpress/bbw/urls.py** - (изменено) Новый URL для подписок 
+- **/BargainBinWordpress/bbw/templatetags/customfilters.py** - Фильтры\Теги.
 - **/BargainBinWordpress/bbw/models.py** - Модели
 - **/BargainBinWordpress/bbw/filters.py** - Фильтры по постам (django_filter)
 - **/BargainBinWordpress/bbw/admin.py** - можно править посты/юзеров/категории/теги из админки

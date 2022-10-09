@@ -3,7 +3,7 @@
 
 
         {% include 'email_header.html' %}
-<h2>Добро пожаловать на сайт, дорогой друг.</h2>
+<h2>Добро пожаловать на сайт, дорогой друг!</h2>
 <p>У нас есть:</p>
 <ol>
     <li>Новости</li>
@@ -16,5 +16,6 @@
 <hr style="margin-top:10px">
 
 
-{% include 'email_footer.html' %}
+{% include 'email_footer.html' with reason='только что зарегистрировались'%}
+
 
