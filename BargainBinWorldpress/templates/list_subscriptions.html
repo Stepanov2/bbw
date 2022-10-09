@@ -9,7 +9,7 @@
 {% block content %}
 <h2>Ваши подписки</h2>
 {% if message %}
-<h2>{{message}}</h2>
+<h2 class="text-success">{{message}}</h2>
 {% endif %}
     <form class="" method="post">
         {% csrf_token %}

@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'bbw',
+    'bbw.apps.DefaultConfig',
     'django_filters',
     'basiclogin',
     'allauth',
@@ -155,7 +155,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 3
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 60
 
 SITE_ID = 1
 
@@ -178,4 +180,6 @@ ADMINS = [
     ]
 
 SERVER_EMAIL = 'dudepleasereply@dummymailserver.oof'
+
+
 

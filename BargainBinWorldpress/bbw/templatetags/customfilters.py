@@ -33,6 +33,13 @@ def url_replace(context, **kwargs):
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
+
 @register.simple_tag
 def define(val=None):
   return val
+
+
+@register.filter()
+def abs_url(val=''):
+  HOST='http://127.0.0.1:8000'
+  return HOST + val

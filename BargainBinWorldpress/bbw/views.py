@@ -152,6 +152,7 @@ def become_author(request):
 
 
 class EmailSubscriptionsView(LoginRequiredMixin, View):
+
     def get_dict(self, current_user: SiteUser) -> dict:
         """Returns a dict of values for template rendering."""
         user_category_list = set(current_user.category_set.all())
@@ -184,7 +185,7 @@ class EmailSubscriptionsView(LoginRequiredMixin, View):
         for val in dict(request.POST).keys():
             val = val.split('-')
             if val[0] == 'cat':
-                cat=Category.objects.get(pk=val[1])
+                cat = Category.objects.get(pk=val[1])
                 current_user.category_set.add(cat)
             elif val[0] == 'tags':
                 tag = Tags.objects.get(pk=val[1])
@@ -193,8 +194,5 @@ class EmailSubscriptionsView(LoginRequiredMixin, View):
                 continue
         current_user.save()
         request_parameters = self.get_dict(current_user)
-        request_parameters.update({'message': 'Успешно обновили ваши подписки, уважаемый!'})
+        request_parameters.update({'message': 'Успешно обновили ваши подписки, дорогой читатель!'})
         return render(request, 'list_subscriptions.html', request_parameters)
-
-    def check_subscriptions(self):
-        pass

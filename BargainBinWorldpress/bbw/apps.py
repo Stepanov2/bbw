@@ -1,8 +1,11 @@
 from django.apps import AppConfig
 
 
-class NewsConfig(AppConfig):
+class DefaultConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'bbw'
+
+    def ready(self):
+        import bbw.signals
 
 

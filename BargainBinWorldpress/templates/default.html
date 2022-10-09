@@ -33,6 +33,8 @@
                         <li class="nav-item"><a class="nav-link" href="/articles">Только всякое</a></li>
 
                         {% if user.is_authenticated %}
+                            subscriptions
+                            <li class="nav-item bg-info"><a class="nav-link text-black text-bold" href="{% url 'subscriptions' %}">Управление подписками.</a></li>
 <!--                            <li class="nav-item"><a href="{% url 'account_email' %}">Change E-mail</a></li>-->
                             <li class="nav-item bg-success"><a class="nav-link" href="{% url 'account_logout' %}">Выход ({% user_display user %})</a></li>
                         {% else %}

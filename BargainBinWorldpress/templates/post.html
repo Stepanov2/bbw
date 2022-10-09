@@ -4,21 +4,24 @@
 
     <h2>С прискорбием сообщаем вам, что по вашему запросу ничего не найдено.</h2>
 {% else %}
+    {%if is_for_email %}
+        {% include 'email_header.html' %}
+    {% endif %}
   <article class="post">
         <h3>{{ post.title }}</h3>
         <div class="post-badges">
             <span class="text-muted">автор:</span>
             <span class="badge rounded-pill bg-secondary">
-                <a href="/?author={{post.author.pk}}" class="text-white">{{ post.author }}</a>
+                <a href="{{'/?author='|abs_url}}{{post.author.pk}}" class="text-white">{{ post.author }}</a>
             </span>
             <span class="badge rounded-pill bg-secondary">{{ post.publication_date|date:'d M Y'|default:"из недалекого будущего" }}</span>
             <span class="text-muted">рубрика:</span>
             <span class="badge rounded-pill bg-info">
-                <a href="/?category={{post.category.pk}}" class="text-white">{{ post.category.title }}</a>
+                <a href="{{'/?category='|abs_url}}{{post.category.pk}}" class="text-white">{{ post.category.title }}</a>
             </span>
             {% if not post.is_article %}
                 <span class="badge rounded-pill bg-info">
-                    <a href="/news" class="text-white">новости</a>
+                    <a href="{{''|abs_url}}{% url 'news_posts'%}" class="text-white">новости</a>
                 </span>
             {% endif %}
 
@@ -26,7 +29,7 @@
         <div class="post_content">
             {% if short_preview %}
                 {{ post.content|truncatewords_html:30|no_naughty_words|safe }}
-                <a class="badge pill bg-warning align-center" href="/posts/{{ post.pk }}">читать дальше</a>
+                <a class="badge pill bg-warning align-center" href="{{''|abs_url}}{% url 'show_post' post.pk %}">читать дальше</a>
             {% else %}
                 {{ post.content|no_naughty_words|safe }}
             {% endif %}
@@ -35,7 +38,7 @@
             <span class="text-muted">теги:</span>
             {% for tag in post.tags.all %}
                 <span class="badge rounded-pill bg-secondary">
-                    <a href="/?tags={{tag.pk}}" class="text-white">{{ tag.title }}</a></span>
+                    <a href="{{'/?tags='|abs_url}}{{tag.pk}}" class="text-white">{{ tag.title }}</a></span>
             {% endfor %}
         </div>
       {% if perms.BBW.post_edit or perms.BBW.post_delete%}
@@ -43,10 +46,10 @@
             <span class="text-muted">администрирование:</span>
 
             <span class="badge rounded-pill bg-info">
-                <a href="/posts/edit/{{post.pk}}" class="text-white">редактировать</a>
+                <a href="{{''|abs_url}}{% url 'edit_post' post.pk %}" class="text-white">редактировать</a>
             </span>
             <span class="badge rounded-pill bg-danger">
-                <a href="/posts/delete/{{post.pk}}" class="text-white">УДОЛИТЬ!</a>
+                <a href="{{''|abs_url}}{% url 'delete_post' post.pk %}" class="text-white">УДОЛИТЬ!</a>
             </span>
 
 
@@ -54,6 +57,10 @@
       {% endif %}
     </article>
 <hr style="margin-top:10px">
+
+    {%if is_for_email %}
+        {% include 'email_footer.html' %}
+    {% endif %}
 
 {% if render_comments %}
 <div class="comments">

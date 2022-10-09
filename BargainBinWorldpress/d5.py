@@ -172,5 +172,13 @@ def random_dates_for_posts():
         post.publication_date = datetime.datetime(year=2019+randint(0, 3), month=randint(1, 12), day=randint(1, 28))
         post.save()
 
+
+def count_num_posts():
+    """Recalculates number of posts for each author"""
+    for author in SiteUser.objects.all():
+        post_count = Post.objects.filter(author=author).count()
+        author.total_posts = post_count
+        author.save()
+
 #  user should not be messing with this file, it's for debug only
 print('А ТЫ СДЕЛАЛ БЭКАП, ПРЕЖДЕ ЧЕМ ПОРТИТЬ БАЗУ?')
