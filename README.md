@@ -10,8 +10,8 @@ _Легковесная альтернатива общеизвестному wo
 - **/BargainBinWordpress/bbw/views.py** - (изменено) Добавлен EmailSubscriptionsView для управления подписками
 - **/BargainBinWordpress/templates/** - (изменено) Новые шаблоны для почты. post.html теперь принимает is_for_email и добавляет к посту email_header/footer.html.
 - **/BargainBinWordpress/bbw/urls.py** - (изменено) Новый URL для подписок 
+- **/BargainBinWordpress/bbw/models.py** - (изменено) Новые поля для подписок.
 - **/BargainBinWordpress/bbw/templatetags/customfilters.py** - Фильтры\Теги.
-- **/BargainBinWordpress/bbw/models.py** - Модели
 - **/BargainBinWordpress/bbw/filters.py** - Фильтры по постам (django_filter)
 - **/BargainBinWordpress/bbw/admin.py** - можно править посты/юзеров/категории/теги из админки
 - **/BargainBinWordpress/d5.py** - Функции для наполнения базы тестовыми данными.
