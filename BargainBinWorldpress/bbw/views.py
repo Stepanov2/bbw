@@ -8,6 +8,7 @@ from .models import Post, SiteUser, Tags, Category
 from .filters import PostFilter
 from .forms import PostForm, ArticleForm, NewsForm, BBWBecomeAuthor  # UserUpdateForm, BBWUserUpdateForm
 from django.template.loader import render_to_string
+from .tasks import hello, mail_test
 
 
 # Create your views here.
@@ -171,6 +172,10 @@ class EmailSubscriptionsView(LoginRequiredMixin, View):
                 'user_tags': user_tag_list}
 
     def get(self, request, *args, **kwargs):
+        hello.delay()
+        print('&' * 30)
+        mail_test.delay()
+
         current_user = request.user.siteuser
         request_parameters = self.get_dict(current_user)
 

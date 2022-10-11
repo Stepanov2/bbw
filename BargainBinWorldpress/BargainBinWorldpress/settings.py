@@ -172,7 +172,6 @@ EMAIL_HOST = "app.debugmail.io"
 EMAIL_HOST_USER = "370ff9be-3076-4f5e-ae84-6be27fd79f9a"
 EMAIL_PORT = "25"
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # пароль от почты
-print(EMAIL_HOST_PASSWORD)
 #EMAIL_USE_SSL = True
 EMAIL_USE_TLS = True
 
@@ -187,3 +186,18 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 # если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
+# =====Celery Stuff
+
+REDIS_PORT = '10989'
+REDIS_HOST = 'redis-10989.c135.eu-central-1-1.ec2.cloud.redislabs.com'
+REDIS_PW = os.getenv("REDIS_LABS_PWD")
+REDIS_PORT_2 = '13802'
+REDIS_HOST_2 = 'redis-13802.c135.eu-central-1-1.ec2.cloud.redislabs.com'
+REDIS_PW_2 = os.getenv("REDIS_LABS_PWD_2")
+CELERY_BROKER_URL = f'redis://:{REDIS_PW}@{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_RESULT_BACKEND = f'redis://:{REDIS_PW_2}@{REDIS_HOST_2}:{REDIS_PORT_2}/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_TRANSPORT_OPTION = {'visibility_timeout': 3600}
+PREFETCH_MULTIPLIER = 1
