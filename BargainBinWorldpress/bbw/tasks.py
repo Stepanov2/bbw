@@ -22,14 +22,15 @@ from django.core.mail import EmailMultiAlternatives
 #
 # import pytz
 
-@shared_task()
+
+@shared_task
 def hello():
     print('#' * 80)
     time.sleep(5)
     print('#' * 80)
 
 
-@shared_task()
+@shared_task
 def mail_test():
     weekly_email = EmailMultiAlternatives(subject='Sent via Celery',
                                           body='get_random_sentences(10)',
