@@ -5,7 +5,7 @@ from django.dispatch import receiver  # импортируем нужный де
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 import re
-
+from bbw.tasks import send_single_email
 from .models import Post, SiteUser, Category, Tags, STRIP_HTML_TAGS
 
 
@@ -56,15 +56,13 @@ def mail_new_posts_to_users(sender, instance, created=False, **kwargs):
         mail_new_posts_to_users.to_list = list(set(mail_new_posts_to_users.to_list))
 
         # mail_new_posts_to_users.to_list now contains all the potential recepients of e-mail exactly once.
-        # Ready to send!
-        # Note: it is implied that splitting this e-mail into len(to_list) separate e-mails is done by mailing service
-
-        mass_email = EmailMultiAlternatives(subject=mail_new_posts_to_users.subject,
-                                            body=mail_new_posts_to_users.body,
-                                            from_email='test@testing.time',
-                                            to=mail_new_posts_to_users.to_list)
-        mass_email.attach_alternative(mail_new_posts_to_users.html, "text/html")
-        mass_email.send() # sending e-mail
+        # Generating tasks to send e-mails!
+        for user in mail_new_posts_to_users.to_list:
+            send_single_email.delay(subject=mail_new_posts_to_users.subject,
+                                    html_body=mail_new_posts_to_users.html,
+                                    body=mail_new_posts_to_users.body,
+                                    from_email='test@testing.time',
+                                    to_emails=[user])
 
         # and, finally, setting .email_initiated back to False, so the code can run again for another post
         mail_new_posts_to_users.email_initiated = False
@@ -93,14 +91,12 @@ def subtract_one_from_post_count(sender, instance, **kwargs):
 
 @receiver(post_save, sender=SiteUser)
 def send_welcome_email(sender, instance, created, **kwargs):
-    if created:
+    if not created:
         return
+
     subject = f'Добро пожаловать на Newsandstuff, {instance.display_username}'
-    body = 'Ну кто читает plain text в 2022, а?..'
     html = render_to_string('welcome_email.html', {})
-    mass_email = EmailMultiAlternatives(subject=subject,
-                                        body=body,
-                                        from_email='test@testing.time',
-                                        to=[instance.user.email])
-    mass_email.attach_alternative(html, "text/html")
-    mass_email.send()  # sending e-mail
+    send_single_email.delay(subject=subject,
+                            html_body=html,
+                            from_email='test@testing.time',
+                            to_emails=[instance.user.email])

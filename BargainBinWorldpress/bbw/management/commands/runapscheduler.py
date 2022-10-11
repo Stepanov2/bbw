@@ -39,7 +39,7 @@ def my_job():
 def send_weekly_mails():
     """Make personalized emails for every User that subscribed to something"""
     one_week_ago = datetime.now() - timedelta(seconds=POSTS_INTERVAL)
-    all_site_users=SiteUser.objects.all()
+    all_site_users = SiteUser.objects.all()
     for user in all_site_users:
         if not (user.category_set.all() or user.tags_set.all()):
             print(f'{user} has no active subscriptions')
