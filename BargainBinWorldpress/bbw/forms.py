@@ -59,13 +59,17 @@ class BBWSignupForm(SignupForm):
     def save(self, request):
 
         user = super(BBWSignupForm, self).save(request)
+        group = Group.objects.get(pk=1)
+        siteuser = SiteUser.objects.create(user=user, display_username=self.potential_username)
+        user.groups.add(group)
+
         print('saving_saving_saving')
         #adding user to group
-        group = Group.objects.get(pk=1)
-        group.user_set.add(user)
+
+        # group.user_set.add(user)
 
         # saving user and creating linked site_user
-        siteuser = SiteUser.objects.create(user=user, display_username=self.potential_username)
+
 
         return user
 
@@ -81,3 +85,20 @@ class BBWBecomeAuthor(forms.Form):
                                                       help_text='Отметьте сий чекбокс, дабы стать автором')
 
 
+class UpdateUserForm(forms.ModelForm):
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['email']
+
+
+class UpdateSiteUserForm(forms.ModelForm):
+    display_username = forms.CharField(max_length=100,
+                                       required=True,
+                                       widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = SiteUser
+        fields = ['display_username']

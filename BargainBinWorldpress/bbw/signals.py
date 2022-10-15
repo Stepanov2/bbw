@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save, post_delete, pre_delete, m2m_changed
 from .views import Post as PostDetails
 from django.dispatch import receiver  # импортируем нужный декоратор
@@ -100,3 +100,24 @@ def send_welcome_email(sender, instance, created, **kwargs):
                             html_body=html,
                             from_email='test@testing.time',
                             to_emails=[instance.user.email])
+
+@receiver(m2m_changed, sender=User.groups.through)
+def update_author_editor_admin(sender, instance, **kwargs):
+    """Changes status of SiteUser, when SiteUser is made author/editor/admin/ todo: is banned, is muted"""
+    print(kwargs['action'])
+    print(instance.__dict__)
+    if kwargs['action'] in ('post_add', 'post_remove'):
+        if kwargs['reverse']:
+            return
+        else:
+            site_user = instance.siteuser
+        # except Exception:
+        #     site_user = siteuser = SiteUser.objects.create(user=instance, display_username=instance.username)
+
+        site_user.is_author = bool(instance.groups.filter(pk=2))
+        site_user.is_editor = bool(instance.groups.filter(pk=3))
+        site_user.can_publish = bool(instance.groups.filter(pk=4))
+        site_user.is_admin = bool(instance.groups.filter(pk=5))
+        site_user.is_moderator = bool(instance.groups.filter(pk=6))
+        site_user.save()
+        print(site_user.__dict__)

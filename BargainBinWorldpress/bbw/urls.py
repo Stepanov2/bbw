@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from django.views.decorators import cache
 
 
 
@@ -17,6 +18,8 @@ urlpatterns = [
     path('posts/edit/<int:pk>', PostUpdate.as_view(), name='edit_post'),
     path('posts/delete/<int:pk>', PostDelete.as_view(), name='delete_post'),
     path('become_author', become_author, name='become_author'),
-    path('subscriptions', EmailSubscriptionsView.as_view(), name='subscriptions')
+    path('subscriptions', EmailSubscriptionsView.as_view(), name='subscriptions'),
+    path('edit_profile', profile, name='edit_profile'),
+
 ]
 

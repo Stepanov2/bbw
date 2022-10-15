@@ -1,12 +1,14 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import Post, SiteUser, Tags, Category
 from .filters import PostFilter
-from .forms import PostForm, ArticleForm, NewsForm, BBWBecomeAuthor  # UserUpdateForm, BBWUserUpdateForm
+from .forms import PostForm, ArticleForm, NewsForm, BBWBecomeAuthor, UpdateUserForm, \
+    UpdateSiteUserForm  # UserUpdateForm, BBWUserUpdateForm
 from django.template.loader import render_to_string
 from .tasks import hello, weekly_digest
 
@@ -197,3 +199,23 @@ class EmailSubscriptionsView(LoginRequiredMixin, View):
         request_parameters = self.get_dict(current_user)
         request_parameters.update({'message': 'Успешно обновили ваши подписки, дорогой читатель!'})
         return render(request, 'list_subscriptions.html', request_parameters)
+
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        site_user_form = UpdateSiteUserForm(request.POST, instance=request.user.siteuser)
+
+        if user_form.is_valid() and site_user_form.is_valid():
+            user_form.save()
+            site_user_form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect(to='edit_profile')
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        site_user_form = UpdateSiteUserForm(instance=request.user.siteuser)
+    print(request.user.siteuser)
+    return render(request, 'profile.html', {'user_form': user_form,
+                                            'site_user_form': site_user_form,
+                                            'site_user': request.user.siteuser})

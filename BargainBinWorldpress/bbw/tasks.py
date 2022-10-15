@@ -23,7 +23,7 @@ from bbw.models import Post, SiteUser, Tags, Category, STRIP_HTML_TAGS
 #
 import pytz
 
-#=====
+# =====
 
 utc = pytz.UTC
 POSTS_INTERVAL = 60*60*24*7  # seconds

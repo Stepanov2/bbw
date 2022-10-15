@@ -2,21 +2,56 @@
 {% load customfilters %}
 
 {% block title %}
-{% if post.title%}
-Редактирование поста "{{ post.title }}"
-{% else %}
-Создание поста
-{% endif %}
+Редактирование профиля для {{site_user.display_username}}
+
+
 {% endblock title %}
 
 {% block content %}
-<h2>Привет, {{ User.display_username }} .</h2>
-<p>Здесь ты можешь исправить себя или стать автором (или редактором, или ещё кем) в пару кликов!</span>
+<h2>Привет, {{ site_user.display_username }} .</h2>
+
+<p>Здесь ты можешь исправить себя в пару кликов!</span>
+{% if user_form.errors or site_user_form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <div id="form_errors">
+                {% for key, value in user_form.errors.items %}
+                    <strong>{{ value }}</strong>
+                {% endfor %}
+
+                {% for key, value in site_user_form.errors.items %}
+                    <strong>{{ value }}</strong>
+                {% endfor %}
+            </div>
+        </div>
+<hr style="margin-top:10px">
+{% endif %}
 <form action="" method="post">
     {% csrf_token %}
     {{ user_form }}
-    {{ form }}
+    {{ site_user_form }}
     <input type="submit" value="Сохранить." />
 </form>
+<hr>
+<h4>Управление:</h4>
+<ul>
+
+    <li class=""><a class="nav-link" href="{% url 'subscriptions' %}">Управление подписками.</a></li>
+    {% if not site_user.is_author%}
+    <li class=""><a class="nav-link" href="{% url 'become_author' %}">Стать автором.</a></li>
+    {% endif %}
+    <li class=""><a class="nav-link" href="{% url 'account_change_password' %}">Сменить пароль.</a></li>
+    <li class=""><a class="nav-link" href="{% url 'account_logout' %}">Выход.</a></li>
+</ul>
+<hr style="margin-top:10px">
+    <h4>Статистика:</h4>
+<ul>
+    <li><strong>Всего комментариев:</strong> {{site_user.total_comments}}</li>
+    <li><strong>Карма комментариев:</strong> {{site_user.comment_karma}}</li>
+    <li><strong>Всего постов:</strong> {{site_user.total_posts}}</li>
+    <li><strong>Карма постов:</strong> {{site_user.total_comments}}</li>
+    <li><strong>Дата регистрации:</strong> {{site_user.date_registered | date:'d M Y'|default:"???" }}</li>
+
+</ul>
+<hr style="margin-top:10px">
 
 {% endblock content %}

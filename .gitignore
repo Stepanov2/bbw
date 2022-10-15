@@ -152,3 +152,7 @@ cython_debug/
 #.idea/
 
 BargainBinWorldpress/Redis_debug.py
+
+*.djcache
+
+BargainBinWorldpress/cache_files/*
