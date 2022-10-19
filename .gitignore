@@ -156,3 +156,4 @@ BargainBinWorldpress/Redis_debug.py
 *.djcache
 
 BargainBinWorldpress/cache_files/*
+BargainBinWorldpress/Redis_debug.py

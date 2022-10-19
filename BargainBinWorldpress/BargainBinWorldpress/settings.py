@@ -212,7 +212,7 @@ LOGGING = {
     'disable_existing_loggers': True,
     'formatters': {
         'simple': {
-            'format': '{levelname}|{asctime}|{first_line_of_message}',
+            'format': '{levelname}|{asctime}|{message}',
             'style': '{'
         },
         'console_warning': {
@@ -237,20 +237,26 @@ LOGGING = {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse',
         },
-        'first_line_only': {
-            '()': 'BargainBinWorldpress.logging_filter.FirstLineFilter',
-        }
+        'strip_exception_info': {
+            '()': 'BargainBinWorldpress.logging_filter.RemoveExcInfo',
+        },
+        'info_or_lower': {
+            '()': 'BargainBinWorldpress.logging_filter.InfoOrLower',
+        },
+        'warning_or_lower': {
+            '()': 'BargainBinWorldpress.logging_filter.WarningOrLower',
+        },
     },
     'handlers': {
         'console_debug': {
             'level': 'INFO',  # todo debug
-            'filters': ['require_debug_true', 'first_line_only'],
+            'filters': ['require_debug_true', 'info_or_lower'],
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
         'console_warning': {
             'level': 'WARNING',
-            'filters': ['require_debug_true'],
+            'filters': ['require_debug_true', 'warning_or_lower'],
             'class': 'logging.StreamHandler',
             'formatter': 'console_warning'
         },
@@ -264,7 +270,7 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.FileHandler',
             'formatter': 'simple',
-            'filters': ['first_line_only'],
+            'filters': ['strip_exception_info'],
             'filename': os.path.join(BASE_DIR, 'logs', 'general.log'),
             'encoding': 'utf8',
 
@@ -323,4 +329,3 @@ LOGGING = {
     }
 }
 
-from BargainBinWorldpress.logging_filter import FirstLineFilter
