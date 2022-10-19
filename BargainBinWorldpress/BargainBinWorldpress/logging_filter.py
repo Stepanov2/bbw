@@ -19,7 +19,6 @@ class InfoOrLower(logging.Filter):
             return False
 
 
-
 class WarningOrLower(logging.Filter):
     def filter(self, record: logging.LogRecord):
         """Only allow messages with WARNING, INFO or DEBUG level to get through."""

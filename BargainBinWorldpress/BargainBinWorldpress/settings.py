@@ -249,7 +249,7 @@ LOGGING = {
     },
     'handlers': {
         'console_debug': {
-            'level': 'INFO',  # todo debug
+            'level': 'DEBUG',  # todo info
             'filters': ['require_debug_true', 'info_or_lower'],
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
@@ -267,10 +267,10 @@ LOGGING = {
             'formatter': 'console_error'
         },
         'general_file': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'simple',
-            'filters': ['strip_exception_info'],
+            'filters': ['strip_exception_info', 'require_debug_false'],
             'filename': os.path.join(BASE_DIR, 'logs', 'general.log'),
             'encoding': 'utf8',
 
@@ -291,6 +291,7 @@ LOGGING = {
         },
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler',
             'formatter': 'console_warning',
         }
@@ -304,27 +305,27 @@ LOGGING = {
         'django.request': {
             'handlers': ['mail_admins', 'error_file', ],
             'propagate': True,
-            'level': 'ERROR',
+
         },
         'django.server': {
             'handlers': ['mail_admins', 'error_file', ],
             'propagate': True,
-            'level': 'ERROR',
+
         },
         'django.template': {
             'handlers': ['mail_admins', 'error_file', ],
             'propagate': True,
-            'level': 'ERROR',
+
         },
         'django.db_backends': {
             'handlers': ['mail_admins', 'error_file', ],
             'propagate': True,
-            'level': 'ERROR',
+
         },
         'django.security': {
             'handlers': ['security_file', ],
             'propagate': False,
-            'level': 'ERROR',
+
         },
     }
 }
