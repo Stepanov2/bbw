@@ -207,3 +207,120 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BROKER_TRANSPORT_OPTION = {'visibility_timeout': 3600}
 PREFETCH_MULTIPLIER = 1
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'simple': {
+            'format': '{levelname}|{asctime}|{first_line_of_message}',
+            'style': '{'
+        },
+        'console_warning': {
+            'format': '{levelname}||||{asctime}|{message}|{pathname}',
+            'style': '{'
+        },
+        'console_error': {
+            'format': '{levelname}||||||||{asctime}|{message}|{pathname}|{exc_info}',
+            'style': '{'
+        },
+
+        'security': {
+            'format': '{levelname}||||||||{asctime}|{module}|{message}',
+            'style': '{'
+        },
+    },
+
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'first_line_only': {
+            '()': 'BargainBinWorldpress.logging_filter.FirstLineFilter',
+        }
+    },
+    'handlers': {
+        'console_debug': {
+            'level': 'INFO',  # todo debug
+            'filters': ['require_debug_true', 'first_line_only'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'console_warning': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_warning'
+        },
+        'console_error': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_error'
+        },
+        'general_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filters': ['first_line_only'],
+            'filename': os.path.join(BASE_DIR, 'logs', 'general.log'),
+            'encoding': 'utf8',
+
+        },
+        'error_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'error.log'),
+            'formatter': 'console_error',
+            'encoding': 'utf8'
+        },
+        'security_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'security.log'),
+            'formatter': 'security',
+            'encoding': 'utf8'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'console_warning',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console_debug', 'console_warning', 'console_error', 'general_file'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'django.request': {
+            'handlers': ['mail_admins', 'error_file', ],
+            'propagate': True,
+            'level': 'ERROR',
+        },
+        'django.server': {
+            'handlers': ['mail_admins', 'error_file', ],
+            'propagate': True,
+            'level': 'ERROR',
+        },
+        'django.template': {
+            'handlers': ['mail_admins', 'error_file', ],
+            'propagate': True,
+            'level': 'ERROR',
+        },
+        'django.db_backends': {
+            'handlers': ['mail_admins', 'error_file', ],
+            'propagate': True,
+            'level': 'ERROR',
+        },
+        'django.security': {
+            'handlers': ['security_file', ],
+            'propagate': False,
+            'level': 'ERROR',
+        },
+    }
+}
+
+from BargainBinWorldpress.logging_filter import FirstLineFilter

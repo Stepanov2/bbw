@@ -215,7 +215,6 @@ def profile(request):
     else:
         user_form = UpdateUserForm(instance=request.user)
         site_user_form = UpdateSiteUserForm(instance=request.user.siteuser)
-    print(request.user.siteuser)
     return render(request, 'profile.html', {'user_form': user_form,
                                             'site_user_form': site_user_form,
                                             'site_user': request.user.siteuser})
